@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Controle Financeiro</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+<div class="grid-container">
+    <div class="col-esquerda">
+        <h2>Nova Transação</h2>
+        <form id="transacao-form">
+            <input type="text" id="descricao" placeholder="Descrição" required />
+            <input type="number" id="valor" placeholder="Valor" required />
+            <select id="tipo">
+                <option value="salario">Salário</option>
+                <option value="fixo">Gasto Fixo</option>
+                <option value="variavel">Gasto Variável</option>
+                <option value="emergencia">Emergência</option>
+                <option value="poupanca">Poupança</option>
+                <option value="lazer">Lazer</option>
+                <option value="objetivo">Objetivo</option>
+            </select>
+            <button type="submit">Adicionar</button>
+        </form>
+
+    <h2>Metas Financeiras</h2>
+    <form id="meta-form">
+        <input type="text" id="nome-meta" placeholder="Nome da meta (ex: CNH)" required />
+        <input type="number" id="valor-meta" placeholder="Valor desejado" required />
+        <button type="submit">Adicionar Meta</button>
+    </form>
+    <ul id="lista-metas"></ul>
+    </div>
+    
+    <div class="col-direita">
+        <h2>Resumo Financeiro</h2>
+        <div class="dashboard">
+    <div class="card salario">
+        <p><strong>Salário Total</strong></p>
+        <span id="total-salario">R$ 0.00</span>
+    </div>
+
+    <div class="card fixo">
+        <p><strong>Gastos Fixos</strong></p>
+        <span id="total-fixo">R$ 0.00</span>
+    </div>
+
+    <div class="card variavel">
+        <p><strong>Variáveis</strong></p>
+        <span id="total-variavel">R$ 0.00</span>
+    </div>
+
+    <div class="card emergencia">
+        <p><strong>Emergência</strong></p>
+        <span id="total-emergencia">R$ 0.00</span>
+        <br><small>Meta: <span id="meta-emergencia">R$ 0.00</span></small>
+    </div>
+
+    <div class="card poupanca">
+        <p><strong>Poupança</strong></p>
+        <span id="total-poupanca">R$ 0.00</span>
+    </div>
+
+    <div class="card lazer">
+        <p><strong>Lazer</strong></p>
+        <span id="total-lazer">R$ 0.00</span>
+    </div>
+
+    <div class="card objetivo">
+        <p><strong>Objetivos</strong></p>
+        <span id="total-objetivo">R$ 0.00</span>
+    </div>
+
+    <div class="card saldo">
+        <p><strong>Saldo Disponivel</strong></p>
+        <span id="saldo">R$ 0.00</span>
+    </div>
+</div>
+
+
+<h2>Distribuição Financeira</h2>
+<canvas id="grafico-distribuicao" width="200" height="200"></canvas>
+
+<div class="alerta" id="alerta"></div>
+
+<ul id="lista-transacoes"></ul>
+
+<button id="resetar">Resetar Tudo</button>
+</div>
+</div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
