@@ -24,7 +24,7 @@ let metaEmergenciaValor = 0;
 
 function atualizarTela() {
     let saldo = 0, fixo = 0, variavel = 0, poupanca = 0, emergencia = 0, objetivo = 0, lazer = 0, salarioBase = 0;
-;
+    ;
     listaTransacoes.innerHTML = "";
 
     transacoes.forEach((item, index) => {
@@ -140,14 +140,37 @@ function atualizarListaDeMetas() {
 
         const li = document.createElement("li");
         li.innerHTML = `
-      <strong>${meta.nome}</strong> - R$${meta.valor.toFixed(2)}  
-      <br>
-      <progress value="${percentual}" max="100"></progress>
-      ${percentual}% completo
-      <button onclick="removerMeta(${index})">Remover</button>
-    `;
+  <strong>${meta.nome}</strong> - R$${meta.valor.toFixed(2)}  
+  <div class="barra-progresso">
+    <div class="progresso" style="width: ${percentual}%;"></div>
+  </div>
+  <small>${percentual}% completo</small>
+  <input type="number" class="contribuir-valor" placeholder="Valor">
+  <button onclick="contribuirMeta(${index}, this)">Contribuir</button>
+  <button onclick="removerMeta(${index})">Remover</button>
+`;
         listaMetas.appendChild(li);
     });
+}
+
+function contribuirMeta(index, button) {
+    const valorInput = button.parentElement.querySelector('.contribuir-valor');
+    const valor = parseFloat(valorInput.value);
+
+    if (valor > 0) {
+        const novaTransacao = {
+            descricao: `Contribuição para ${metas[index].nome}`,
+            valor: valor,
+            categoria: "objetivo"
+        };
+
+        transacoes.push(novaTransacao);
+        salvar();
+        atualizarTela();
+        atualizarGrafico();
+        atualizarListaDeMetas();
+        valorInput.value = '';
+    }
 }
 
 function removerMeta(index) {
@@ -234,5 +257,62 @@ function calcularTotalPorTipo(tipo) {
         .reduce((total, item) => total + item.valor, 0);
 }
 
+// Dark Mode
+const darkModeToggle = document.getElementById('darkModeToggle');
+const body = document.body;
+
+// Verificar preferência salva
+const isDarkMode = localStorage.getItem('darkMode') === 'true';
+if (isDarkMode) {
+    body.classList.add('dark-mode');
+    darkModeToggle.textContent = '☀️';
+}
+
+darkModeToggle.addEventListener('click', () => {
+    body.classList.toggle('dark-mode');
+    const isDark = body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDark);
+    darkModeToggle.textContent = isDark ? '☀️' : '🌙';
+});
+
+// Funções para controle dos modais
+function openModal(modalId) {
+    document.getElementById(modalId).style.display = "block";
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = "none";
+}
+
+// Fechar modal ao clicar fora dele
+window.onclick = function (event) {
+    if (event.target.className === 'modal') {
+        event.target.style.display = "none";
+    }
+}
 
 atualizarTela();
+
+
+function atualizarTickerFinanceiro() {
+    const ticker = document.getElementById("ticker-texto");
+
+    const saldoAtual = parseFloat(document.getElementById("saldo").textContent.replace("R$", "").replace(",", "."));
+    const fixo = parseFloat(totalFixo.textContent.replace("R$", "").replace(",", "."));
+    const emergencia = parseFloat(totalEmergencia.textContent.replace("R$", "").replace(",", "."));
+    const objetivos = parseFloat(totalObjetivos.textContent.replace("R$", "").replace(",", "."));
+    const poupanca = parseFloat(totalPoupanca.textContent.replace("R$", "").replace(",", "."));
+
+    let textoTicker = ` SALDO: R$ ${saldoAtual.toFixed(2)} | FIXOS: R$ ${fixo.toFixed(2)} | EMERGÊNCIA: R$ ${emergencia.toFixed(2)} | POUPANÇA: R$ ${poupanca.toFixed(2)} | OBJETIVOS: R$ ${objetivos.toFixed(2)}`;
+
+    const metas = JSON.parse(localStorage.getItem("metas")) || [];
+
+    metas.forEach(meta => {
+        textoTicker += ` |  ${meta.nome.toUpperCase()}: R$${objetivos.toFixed(2)} / R$${parseFloat(meta.valor).toFixed(2)}`;
+    });
+
+    ticker.textContent = textoTicker;
+}
+
+
+atualizarTickerFinanceiro(); // ✅ chama para atualizar os dados do header
